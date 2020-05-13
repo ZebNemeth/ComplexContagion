@@ -7,7 +7,7 @@ import math
 nCones = 8 #The number of cones (communities)
 nLevels = 4 #The number of levels per cone
 nNodes = [4] #The number of nodes per level. For now only the highest level
-for i in range(1,nLevels): nNodes.append(max(nNodes)*2**3) #Number of nodes set for other levels
+for i in range(1,nLevels): nNodes.append(max(nNodes)*8) #Number of nodes set for other levels
 nRingNeighbors = [2,4,6,8] #Number of neighbors in the ring. Different per level
 nUpperNeighbors = [0,1,2,3] #Number of upper neighbors per node in the ring. Different per level
 
