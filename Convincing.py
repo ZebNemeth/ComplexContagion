@@ -14,7 +14,7 @@ nr_convinced_neighbors = 2 # numer of neighbors of initially convinced node, tha
 level_start = 1 # level in which to seed 
 
 # choosing initially convinced nodes and their convinced neighbors
-nodes = # unique IDs of the nodes
+nodes = list(G.nodes) # unique IDs of the nodes
 convinced = []
 convinced.append(random.sample(range(0,nNodes[level_start]),nr_convinced))
 for i in range(0,nr_convinced):
