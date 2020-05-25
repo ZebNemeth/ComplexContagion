@@ -64,11 +64,11 @@ def getNodes(Graph, **conditions):
 
 'Setting up the variables for the model'
 nCones = 3 #The number of cones (communities)
-nLevels = 3 #The number of levels per cone
+nLevels = 5 #The number of levels per cone
 
 #The number of nodes per level. Example: with n levels this creates [n,n*nInferiors,(n*nInferiors)*nInferiors, ..., n*(nInferiors**n)]
 nNodes = np.array(nLevels)
-nInferiors = 4
+nInferiors = 2
 for i in range(1,nLevels): nNodes = np.append(nNodes,np.max(nNodes)*nInferiors)
 print nNodes
 nRingNeighbors = (np.arange(nLevels)+1)*2 #Number of neighbors per node in the ring. Example with 3 levels: [2,4,6]
@@ -106,7 +106,7 @@ for level in reversed(range(nLevels)): #Building it level by level, from the low
 'Optional interconal edges are created'
 bInterEdge = True  # Wanna do this?
 bManual = False     # See ~9 lines down what to do
-friendliness = .90 # Fraction of nodes that are assigned a friend in another cone
+friendliness = .150 # Fraction of nodes that are assigned a friend in another cone
 friendlyLevel = nLevels # Only lowest ranking nodes are friendly to othercone low-levels
 
 goodFriend = .9
