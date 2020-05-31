@@ -11,7 +11,9 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 
-WeightUni = 2 # Universal Weight
+WeightUni = 0.2 # Universal Weight through the same level
+WeightUniUp = 0.1 # Universal Weight going Upward
+WeightUniDown = 0.5 # Universal Weight going Downward
 
 'Defining the functions for the name labeling.'
 def labelNode(conenr, levelnr, nodenr):
@@ -112,8 +114,9 @@ for level in reversed(range(nLevels)): #Building it level by level, from the low
             
             for nodeInLowerLevel in range(nNodes[level+1]): #This loop goes over every node in the lower level
                 nodeInThisLevel = math.ceil((nodeInLowerLevel+1)/groupsize)-1 #This is the nodenumber of the node in the current level.
-                G.add_edge(labelNode(cone,level,nodeInThisLevel),labelNode(cone,level+1,nodeInLowerLevel), weight=WeightUni) #Weighted edges are added between the different levels
-             
+                G.add_edge(labelNode(cone,level,nodeInThisLevel),labelNode(cone,level+1,nodeInLowerLevel), weight=WeightUniUp) #Weighted edges are added between the different levels
+                G.add_edge(labelNode(cone,level+1,nodeInLowerLevel),labelNode(cone,level,nodeInThisLevel), weight=WeightUniDown) #Weighted edges are added between the different levels 
+            
 'Graph is drawn'
 nx.draw(G, node_size=10, edge_color='grey')
 plt.show()
