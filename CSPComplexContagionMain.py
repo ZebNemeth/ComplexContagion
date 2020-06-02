@@ -8,8 +8,6 @@ https://github.com/ZebNemeth/ComplexContagion
 
 '''
 
-
-
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
@@ -32,4 +30,3 @@ G.add_weighted_edges_from( interconalEdges( var.friendliness, var.friendLevel, v
 'Graph is drawn'
 nx.draw(G, node_size=10, edge_color='grey')
 plt.show()
-

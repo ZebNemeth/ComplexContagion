@@ -11,7 +11,7 @@ import CSPComplexContagionConfig as var
 def conalGraphGenerator( nCones = 1, nLevels = 4, nNodes = np.arange(1,5), nInferiors = 2, nRingNeighbors = (np.arange(4))*2 ):
 
     'Graph is defined'
-    G = nx.MultiGraph()
+    G = nx.MultiDiGraph()
 
 
     'Cones are created'
@@ -20,6 +20,7 @@ def conalGraphGenerator( nCones = 1, nLevels = 4, nNodes = np.arange(1,5), nInfe
         'The seperate rings are build'
         #Making the 'blueprint' of the Watts-Strogatz ring for this level:
         ringlevel = nx.watts_strogatz_graph(nNodes[level],nRingNeighbors[level],0)
+        ringlevel = ringlevel.to_directed() #Turn ring into directed ring
         #Implementing this blueprint for every cone
         for cone in range(nCones):
             mapping = {}
@@ -29,8 +30,6 @@ def conalGraphGenerator( nCones = 1, nLevels = 4, nNodes = np.arange(1,5), nInfe
 
             G.add_nodes_from(ring) #Adding the nodes from the ring to the graph
             G.add_edges_from(ring.edges(), weight = var.weightNeutral ) #Adding the edges from the ring to the graph and giving them the same-level weights
-
-            G = G.to_directed() #Turn Multi Graph into directed, only the intra-ring nodes get duplicated, not the one between rings
 
             'The connections between rings are created. The connections are created from the higher level to the lower level'
             if level != nLevels-1: #The lowest level can't create any connections up, so this level is skipped
