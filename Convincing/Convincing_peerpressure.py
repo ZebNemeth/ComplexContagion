@@ -1,43 +1,72 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon May 18 09:15:56 2020
-
 @author: luja
 """
 import random as random
 import sys
 import os
-os.chdir(r"C:\Users\luja\Documents\GSS\Complex_Systems_Project\ComplexContagion-master")
+os.chdir(r"C:\Users\aartv\Documents\Natuur- en sterrenkunde\CSP\ComplexContagion-ParadigmContagion")
 print(os.getcwd())
 
 from past.builtins import execfile
-execfile('Cones_weighted.py')  
+execfile('CSPComplexContagionMain.py')  
 
 #conv = ['convinced', 'time t', 'r'] #list with values for convinced nodes, timestep and r. - to be set up later if needed
-t = 0         #timesteps
+t = 0        #timesteps
 tmax = 5     #maximum amount of timesteps
-r = 2       #number of neibors that need to be convinced to convince a node
+r = 3        #number of neibors that need to be convinced to convince a node
 nr_convinced = 3 # number of initally convinced nodes
 nr_convinced_neighbors = 2 # numer of neighbors of initially convinced node, that are already convinced
 level_start = 1 # level in which to seed 
 
 'choosing initially convinced nodes and their convinced neighbors'
 nodes = list(G.nodes) # unique IDs of the nodes
-convinced = []
-convinced = random.sample(list(G.nodes()),nr_convinced)
-for i in range(0, nr_convinced):
-    convinced.extend(random.sample(list(G[convinced[i]]),nr_convinced_neighbors))
-seeding = len(convinced) 
 
-'check if seeding has worked and otherwise stop code execution'
-if seeding == (nr_convinced+nr_convinced*nr_convinced_neighbors):
-    print('Seeding complete')
-    print('Initially convinced nodes: '+ str(seeding))
-    convinced.sort()
-    print(convinced)
-else:
-    print('Seeding error')
-    sys.exit()
+seedingTry = 1 #How many times seeded
+while True:
+    if seedingTry == 5:
+        print('Seeding failed too often, procedure stopped')
+        sys.exit()
+
+    nx.set_node_attributes(G, 0, name='conv_lev') 
+    # access attribute as G.node['0_0_0']['conv_lev']
+
+    nodes = list(G.nodes()) # unique IDs of the nodes
+
+    'choosing initially convinced nodes and their convinced neighbors'
+    convinced = random.sample(getNodes(G, levelnr = level_start),nr_convinced)
+    
+    for i in range(0, nr_convinced):
+        neighbors = list(G[convinced[i]])
+
+        #Neighbors which cannot be convinced are excluded
+        for neighbor in neighbors[:]:
+            if neighbor in convinced or getLevelnr(neighbor) != level_start:
+                neighbors.remove(neighbor)
+
+        #If not enough neighbors are left for seeding
+        if len(neighbors) < nr_convinced_neighbors:
+            break
+        
+        neighborsToConvince = random.sample(neighbors,nr_convinced_neighbors)
+        convinced.extend(neighborsToConvince)
+    seeding = len(convinced)
+
+    for node in convinced:
+        G.node[node]['conv_lev']=1
+    
+    'check if seeding has worked and otherwise stop code execution'
+    if seeding == (nr_convinced+nr_convinced*nr_convinced_neighbors):
+        print('Seeding complete')
+        print('Initially convinced nodes: '+ str(seeding))
+        convinced.sort()
+        print(convinced)
+        break
+    else:
+        print('Seeding error, starting over again')
+        seedingTry += 1
+        continue
          
 conv_next = []          #the nodes to be convinced in 1 timestep
 #'looping n times to get multiple values of N - only relevant for running the code multiple times'
@@ -74,5 +103,4 @@ if sum(conv_time)==(len(convinced)):
 else:
     print('Some nodes got lost')
 consensus=(len(convinced)/len(nodes))*100
-print(str(consensus) +'% were convinced')
- 
+print('{:.2f} were convinced'.format(consensus))
