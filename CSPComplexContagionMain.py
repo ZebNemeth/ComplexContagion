@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import math
 import numpy as np
 
-#from NodeLabeling import labelNode, getConenr, getLevelnr, getNodenr, getNodes
+from NodeLabeling import labelNode, getConenr, getLevelnr, getNodenr, getNodes
 from InterconalEdges import interconalEdges
 from NetworkGenerator import conalGraphGenerator
 

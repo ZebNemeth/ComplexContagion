@@ -8,7 +8,7 @@ import numpy as np
 
 'Cone variables'
 nCones = 1 #The number of cones (communities)
-nLevels = 2 #The number of levels per cone
+nLevels = 3 #The number of levels per cone
 
 
 nNodes = np.array(4) #The number of nodes in the highest level

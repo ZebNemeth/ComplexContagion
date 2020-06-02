@@ -41,20 +41,14 @@ def getNodes(Graph, **conditions):
             specificNode = True
             Nodenr = conditions[argument]    
     nodelist = list(Graph.nodes)
-    irrelevantNodes = []
-    for counter, node in enumerate(nodelist):
-        if specificCone:
-            if getConenr(node) != Conenr:
-                irrelevantNodes.append(node)
-                continue
-        if specificLevel:
-            if getLevelnr(node) != Levelnr:
-                irrelevantNodes.append(node)
-                continue
-        if specificNode:
-            if getNodenr(node) != Nodenr:
-                irrelevantNodes.append(node)
-                continue
-    for counter, node in enumerate(irrelevantNodes):
-        nodelist.remove(node)
+    for node in nodelist[:]:
+        if specificCone and getConenr(node) != Conenr:
+            nodelist.remove(node)
+            continue
+        if specificLevel and getLevelnr(node) != Levelnr:
+            nodelist.remove(node)
+            continue
+        if specificNode and getNodenr(node) != Nodenr:
+            nodelist.remove(node)
+            continue
     return nodelist
