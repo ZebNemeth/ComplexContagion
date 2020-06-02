@@ -44,11 +44,8 @@ def getNodes(Graph, **conditions):
     for node in nodelist[:]:
         if specificCone and getConenr(node) != Conenr:
             nodelist.remove(node)
-            continue
-        if specificLevel and getLevelnr(node) != Levelnr:
+        elif specificLevel and getLevelnr(node) != Levelnr:
             nodelist.remove(node)
-            continue
-        if specificNode and getNodenr(node) != Nodenr:
+        elif specificNode and getNodenr(node) != Nodenr:
             nodelist.remove(node)
-            continue
     return nodelist
