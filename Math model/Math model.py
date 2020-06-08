@@ -1,6 +1,7 @@
 import sympy
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 '''
 The variables of the model
@@ -8,7 +9,7 @@ The variables of the model
 
 'Cone variables'
 nLevels = 4 #The number of levels per cone
-nNodes = np.array(10) #The number of nodes in the highest level
+nNodes = np.array(4) #The number of nodes in the highest level
 nInferiors = 3
 for i in range(1,nLevels): 
     nNodes = np.append(nNodes,np.max(nNodes)*nInferiors) # Example: with 3 levels of 2 inferiors this creates [4,8,16]
@@ -17,13 +18,13 @@ for i in range(1,nLevels):
 nRingNeighbors = (np.arange(nLevels)+1)*2
 
 'Number of entries determines number of runs'
-weightNeutral = 0.4  # Weights on the same ring
-weightUp = 0.3       # Weight from inferior to superior
-weightDown = 0.8     # Weight from your boss and the world on your shoulders
+weightNeutral = 0.3  # Weights on the same ring
+weightUp = 0.05       # Weight from inferior to superior
+weightDown = 0.55     # Weight from your boss and the world on your shoulders
 
 'seeding varinables'
-ini_convinced = 2   # number of initally convinced nodes
-ini_convinced_neighbors = 0 # number of neighbors of initially convinced node, that are already convinced
+ini_convinced = 1   # number of initally convinced nodes
+ini_convinced_neighbors = 2 # number of neighbors of initially convinced node, that are already convinced
 level_start = 0 # level in which to seed
 
 'convincing variables'
@@ -222,7 +223,7 @@ def psi(nu,Lj,t): #Calculate psi
     #so many M that M*w <= nu and (M+1)*w > nu.
     MList = np.zeros(maxLevel-minLevel+1)
     MList[0] = int(nu/w(minLevel,Lj))
-    
+    if nu/w(minLevel,Lj) == int(nu/w(minLevel,Lj)) and int(nu/w(minLevel,Lj)) != 0: MList[0] -= 1
     i = 0 #i is an iterator which is used to track where the changes are done
     
     psi = 0 #phi is a sum of terms, so it starts with being zero
@@ -255,7 +256,7 @@ def psi(nu,Lj,t): #Calculate psi
             #If the first non-zero element is on the end OR there is no non-zero element, 1 is subtracted...
             else:
                 MList[i] -= 1
-                
+
                 #And if there is no non-zero element, the procedure is stopped
                 if MList[i] == -1:
                     calculating = False
@@ -283,9 +284,15 @@ def psi(nu,Lj,t): #Calculate psi
 
                     #This part is hardcoded. It should be possible to not do this, but this is easier now
                     #Level i is filled now similar to how the first element got filled in the beginning
-                    if Lj == 0: MList[i] = int(nu/w(Lj+1,Lj))
-                    elif Lj == nLevels-1: MList[i] = int(nu/w(Lj,Lj))
-                    else: MList[i] = int(nu/w(Lj,maxLevel-i))
+                    if Lj == 0:
+                        MList[i] = int(nu/w(Lj+1,Lj))
+                        if nu/w(Lj+1,Lj) == int(nu/w(Lj+1,Lj)) and int(nu/w(Lj+1,Lj)) != 0: MList[i] -= 1
+                    elif Lj == nLevels-1:
+                        MList[i] = int(nu/w(Lj,Lj))
+                        if nu/w(Lj,Lj) == int(nu/w(Lj,Lj)) and int(nu/w(Lj+1,Lj)) != 0: MList[i] -= 1
+                    else:
+                        MList[i] = int(nu/w(Lj,maxLevel-i))
+                        if nu/w(Lj,maxLevel-i) == int(nu/w(Lj,maxLevel-i)) and int(nu/w(Lj+1,Lj)) != 0: MList[i] -= 1
 
                 #if level i-1 (the previous level i) is not empty yet, level i gets emptied
                 else: MList[i] = 0
