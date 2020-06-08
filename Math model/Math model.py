@@ -42,7 +42,7 @@ nNodesSeeded[level_start] = ini_convinced*(1+ini_convinced_neighbors)
 rho0 = [] #density of seeded nodes per level
 for level in range(nLevels):
     rho0.append(nNodesSeeded[level]/nNodes[level])
-nNeighborsPerLevel = nRingNeighbors #Total number of neighbors per level
+nNeighborsPerLevel = nRingNeighbors.copy() #Total number of neighbors per level
 for level in range(nLevels):
     if level != 0: nNeighborsPerLevel[level] += 1
     if level != nLevels-1: nNeighborsPerLevel[level] += nInferiors
