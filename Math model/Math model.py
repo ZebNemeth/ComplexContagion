@@ -2,6 +2,7 @@ import sympy
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import timeit
 
 '''
 The variables of the model
@@ -19,8 +20,8 @@ nRingNeighbors = (np.arange(nLevels)+1)*2
 
 'Number of entries determines number of runs'
 weightNeutral = 0.3  # Weights on the same ring
-weightUp = 0.05       # Weight from inferior to superior
-weightDown = 0.55     # Weight from your boss and the world on your shoulders
+weightUp = 0.25       # Weight from inferior to superior
+weightDown = 0.35     # Weight from your boss and the world on your shoulders
 
 'seeding varinables'
 ini_convinced = 1   # number of initally convinced nodes
@@ -76,8 +77,8 @@ def theta(Li,Lj,t): #Calculates theta
 
 def n(Li,Lj): #Returns number of edges between level Li and a node on level Lj
     if (Li == Lj): return nRingNeighbors[Li]
-    elif (Li == Lj + 1): return 1
-    elif (Li == Lj - 1): return nInferiors
+    elif (Li == Lj - 1): return 1
+    elif (Li == Lj + 1): return nInferiors
     else: return 0
 
 def w(Li,Lj): #Returns weight from node on level Li to node on level Lj
@@ -356,10 +357,24 @@ def f(t): #Calculate f
 Calculate the total fraction of convinced nodes and plot it versus time
 '''
 
-t = np.arange(20)
+t = np.arange(50)
 fraction = []
 for time in t:
+    print("Calculate f(t) for time =",time,"/",max(t))
+    start = timeit.default_timer()
     fraction.append(f(time))
+    stop = timeit.default_timer()
+    print("This took",round(stop-start,1),"seconds")
+    print("")
 plt.plot(t,fraction)
 plt.xlabel("Time")
 plt.ylabel("Consensus")
+
+#Calculates how much the draining should be
+def drainingAmount(From,To):
+    return(w(From,To)*2/nNeighborsPerLevel[From])
+
+print((n(0,0)*drainingAmount(0,0)+n(1,0)*drainingAmount(1,0))/nNeighborsPerLevel[0])
+print((n(0,1)*drainingAmount(0,1)+n(1,1)*drainingAmount(1,1)+n(2,1)*drainingAmount(2,1))/nNeighborsPerLevel[1])
+print((n(1,2)*drainingAmount(1,2)+n(2,2)*drainingAmount(2,2)+n(3,2)*drainingAmount(3,2))/nNeighborsPerLevel[2])
+print((n(2,3)*drainingAmount(2,3)+n(3,3)*drainingAmount(3,3))/nNeighborsPerLevel[3])
